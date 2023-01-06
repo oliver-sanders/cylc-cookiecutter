@@ -1,0 +1,26 @@
+[scheduling]
+    [[graph]]
+{%- if cookiecutter.cycling == 'None' -%}
+        R1 = """ # run once
+        """
+{%- elif cookiecutter.cycling == 'INTEGER' -%}
+        P1 = """ # run every cycle
+        """
+{%- else -%}
+        P1D = """ # run every day
+        """
+{%- endif -%}
+
+[runtime]
+{% if cookiecutter.rose == 'n' %}
+    [[hello_world]]
+        script = """
+            echo "Hello ${WORLD}!"
+        """
+        [[[environment]]]
+            WORLD = Earth
+{% else %}
+    [[hello_world]]
+        # this runs app/hello_world
+        script = rose task-run
+{% endif %}

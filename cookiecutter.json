@@ -1,0 +1,11 @@
+{
+    "project_name": "my-workflow",
+    "use_jinja2_preprocessing": ["yes", "no"],
+    "use_rose_configurations": ["no", "yes"],
+    "cycling_mode": [
+        "Simulated Time - the workflow will repeat into the future",
+        "Real Time - the workflow will repeat on a timed schedule",
+        "Integer - the workflow will repeat",
+        "None - the workflow will run once"
+    ]
+}

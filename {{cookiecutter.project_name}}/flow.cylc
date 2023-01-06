@@ -1,0 +1,52 @@
+{% if cookiecutter.use_jinja2_preprocessing == 'yes' -%}
+#!Jinja2
+
+{%- if cookiecutter.cycling_mode.startswith('Simulated Time') %}
+    {%- set cycling_mode = 'simulated' %}
+{%- elif cookiecutter.cycling_mode.startswith('Real Time') %}
+    {%- set cycling_mode = 'real' %}
+{%- elif cookiecutter.cycling_mode.startswith('Integer') %}
+    {%- set cycling_mode = 'integer' %}
+{%- else %}
+    {%- set cycling_mode = 'none' %}
+{%- endif %}
+
+{% set rose = cookiecutter.use_rose_configurations == 'yes' -%}
+
+{% endif -%}
+[scheduling]
+{%- if cycling_mode == 'none' %}
+{%- elif cycling_mode == 'integer' %}
+    cycling mode = integer
+    initial cycle point = 1
+{%- else %}
+    # the first cycle will be at midnight today
+    initial cycle point = previous(T00)
+{%- endif %}
+    [[graph]]
+{%- if cycling_mode == 'none' %}
+        R1 = """ # run once
+            hello_world
+        """
+{% elif cycling_mode == 'integer' %}
+        P1 = """ # run every cycle
+            hello_world
+        """
+{% else %}
+        P1D = """ # run every day
+            {% if cycling_mode == 'real' %}@clock => {% endif %}hello_world
+        """
+{%- endif %}
+
+[runtime]
+{%- if rose == 'no' %}
+    [[hello_world]]
+        script = echo "Hello ${WORLD}!"
+        [[[environment]]]
+            WORLD = Earth
+{%- else %}
+    [[hello_world]]
+        script = rose task-run
+{%- endif %}
+
+## {{ cookiecutter.cycling_mode }}
